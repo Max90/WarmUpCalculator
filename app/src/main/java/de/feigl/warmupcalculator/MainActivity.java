@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
     private TextView forthSetPlates;
     private TextView fifthSetPlates;
     private float incrementNumber;
+    private float starting;
     ArrayList<Double> plates;
 
 
@@ -61,6 +62,7 @@ public class MainActivity extends Activity {
                 setFifthSetPlates();
                 setForthSetPlates();
                 setThirdSetPlates();
+                changeStartingWeightValue();
             }
         });
 
@@ -86,6 +88,18 @@ public class MainActivity extends Activity {
                 return false;
             }
         });
+
+        changeStartingWeightValue();
+
+        incrementNumber = calculateIncrement();
+    }
+
+    private void changeStartingWeightValue() {
+        if(startingWeight.getText().toString().equals("")){
+            starting = 0;
+        } else {
+            starting = Float.parseFloat(startingWeight.getText().toString());
+        }
     }
 
     private void setPlates() {
@@ -99,36 +113,28 @@ public class MainActivity extends Activity {
     }
 
     private void setIncrementText() {
-        incrementNumber = calculateIncrement();
         increment.setText("Increment: " + incrementNumber);
     }
 
     //calculating the set weights/////////////////////////////////////////////////////////////////////////
     private void calculateFifthSet() {
-        if (!startingWeight.getText().toString().equals("") && !endingWeight.getText().toString().equals("")) {
-            float starting = Float.parseFloat(startingWeight.getText().toString());
-            float step = calculateIncrement();
+        incrementNumber = calculateIncrement();
+            float step = incrementNumber;
             double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
             fifthSet.setText("2 x " + weight);
-        }
     }
 
     private void calculateForthSet() {
-        if (!startingWeight.getText().toString().equals("") && !endingWeight.getText().toString().equals("")) {
-            float starting = Float.parseFloat(startingWeight.getText().toString());
             float step = calculateIncrement();
             double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
             forthSet.setText("3 x " + weight);
-        }
+
     }
 
     private void calculateThirdSet() {
-        if (!startingWeight.getText().toString().equals("") && !endingWeight.getText().toString().equals("")) {
-            float starting = Float.parseFloat(startingWeight.getText().toString());
-            float step = calculateIncrement();
+            float step = incrementNumber;
             double weight = starting + step - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
             thirdSet.setText("5 x " + weight);
-        }
     }
 
     private void calculateFirstTwoSets() {
@@ -205,39 +211,42 @@ public class MainActivity extends Activity {
     }
 
     private void setFifthSetPlates() {
-        if (endingWeight.getText().toString().equals("")) {
-            endingWeight.setText("0");
-        }
-        ArrayList<Double> platesList = getPlates(Double.valueOf(endingWeight.getText().toString()), plates);
+        float step = calculateIncrement();
+        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        ArrayList<Double> platesList = getPlates(weight, plates);
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
         }
+        if(platesString.length() > 0)
+            platesString = platesString.substring(0, platesString.length() -2);
         fifthSetPlates.setText(platesString);
     }
 
     private void setForthSetPlates() {
-        if (endingWeight.getText().toString().equals("")) {
-            endingWeight.setText("0");
-        }
-        ArrayList<Double> platesList = getPlates(Double.valueOf(endingWeight.getText().toString()), plates);
+        float step = calculateIncrement();
+        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        ArrayList<Double> platesList = getPlates(weight, plates);
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
         }
-        fifthSetPlates.setText(platesString);
+        if(platesString.length() > 0)
+            platesString = platesString.substring(0, platesString.length() -2);
+        forthSetPlates.setText(platesString);
     }
 
     private void setThirdSetPlates() {
-        if (endingWeight.getText().toString().equals("")) {
-            endingWeight.setText("0");
-        }
-        ArrayList<Double> platesList = getPlates(Double.valueOf(endingWeight.getText().toString()), plates);
+        float step = calculateIncrement();
+        double weight = starting + (step) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        ArrayList<Double> platesList = getPlates(weight, plates);
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
         }
-        fifthSetPlates.setText(platesString);
+        if(platesString.length() > 0)
+            platesString = platesString.substring(0, platesString.length() -2);
+        thirdSetPlates.setText(platesString);
     }
 
 
