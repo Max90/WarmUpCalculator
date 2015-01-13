@@ -1,0 +1,126 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/et_starting_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/starting_weight_hint"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/et_end_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_starting_weight"
+            android:hint="@string/end_weight_hint"
+            android:imeOptions="actionDone"
+            android:inputType="number" />
+
+
+        <TextView
+            android:id="@+id/tv_increment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_end_weight"
+            android:text="@string/increment_string" />
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tv_increment"
+            android:layout_marginTop="33dp">
+
+            <TableRow android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_set"
+                    android:layout_weight="1"
+                    android:text="@string/set_string" />
+
+                <TextView
+                    android:id="@+id/tv_plates"
+                    android:layout_weight="1"
+                    android:text="@string/plates_on_side_string" />
+            </TableRow>
+
+            <TableRow android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_first_set"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_first_set_plates"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_second_set"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_second_set_plates"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_third_set"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_third_set_plates"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_forth_set"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_forth_set_plates"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_fifth_set"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_fifth_set_plates"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+</ScrollView>
