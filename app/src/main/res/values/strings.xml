@@ -9,4 +9,7 @@
     <string name="set_string">Set</string>
     <string name="starting_weight_hint">Enter starting weight</string>
     <string name="end_weight_hint">Enter working set weight</string>
+    <string name="chnage_plates_menu_string">change Plates</string>
+    <string name="title_activity_weights">Change Plates</string>
+
 </resources>

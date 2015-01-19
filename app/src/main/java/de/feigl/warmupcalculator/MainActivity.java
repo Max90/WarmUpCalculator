@@ -1,7 +1,11 @@
 package de.feigl.warmupcalculator;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
     private EditText startingWeight;
     private EditText endingWeight;
     private TextView increment;
@@ -41,6 +45,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         instantiateWeights();
         increment = (TextView) findViewById(R.id.tv_increment);
         instantiateSetStrings();
@@ -95,7 +101,7 @@ public class MainActivity extends Activity {
     }
 
     private void changeStartingWeightValue() {
-        if(startingWeight.getText().toString().equals("")){
+        if (startingWeight.getText().toString().equals("")) {
             starting = 0;
         } else {
             starting = Float.parseFloat(startingWeight.getText().toString());
@@ -119,22 +125,22 @@ public class MainActivity extends Activity {
     //calculating the set weights/////////////////////////////////////////////////////////////////////////
     private void calculateFifthSet() {
         incrementNumber = calculateIncrement();
-            float step = incrementNumber;
-            double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
-            fifthSet.setText("2 x " + weight);
+        float step = incrementNumber;
+        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        fifthSet.setText("2 x " + weight);
     }
 
     private void calculateForthSet() {
-            float step = calculateIncrement();
-            double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
-            forthSet.setText("3 x " + weight);
+        float step = calculateIncrement();
+        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        forthSet.setText("3 x " + weight);
 
     }
 
     private void calculateThirdSet() {
-            float step = incrementNumber;
-            double weight = starting + step - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
-            thirdSet.setText("5 x " + weight);
+        float step = incrementNumber;
+        double weight = starting + step - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        thirdSet.setText("5 x " + weight);
     }
 
     private void calculateFirstTwoSets() {
@@ -218,8 +224,8 @@ public class MainActivity extends Activity {
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
         }
-        if(platesString.length() > 0)
-            platesString = platesString.substring(0, platesString.length() -2);
+        if (platesString.length() > 0)
+            platesString = platesString.substring(0, platesString.length() - 2);
         fifthSetPlates.setText(platesString);
     }
 
@@ -231,8 +237,8 @@ public class MainActivity extends Activity {
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
         }
-        if(platesString.length() > 0)
-            platesString = platesString.substring(0, platesString.length() -2);
+        if (platesString.length() > 0)
+            platesString = platesString.substring(0, platesString.length() - 2);
         forthSetPlates.setText(platesString);
     }
 
@@ -244,8 +250,8 @@ public class MainActivity extends Activity {
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
         }
-        if(platesString.length() > 0)
-            platesString = platesString.substring(0, platesString.length() -2);
+        if (platesString.length() > 0)
+            platesString = platesString.substring(0, platesString.length() - 2);
         thirdSetPlates.setText(platesString);
     }
 
@@ -265,6 +271,10 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.action_weights) {
+            Intent i = new Intent(MainActivity.this, WeightsActivity.class);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
