@@ -76,8 +76,7 @@ public class WeightsActivity extends ActionBarActivity {
 // Set an EditText view to get user input
         final EditText input = new EditText(this);
         input.setTextColor(Color.BLACK);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         alertDialogBuilder.setView(input);
 
         alertDialogBuilder.setPositiveButton(R.string.done_string, new DialogInterface.OnClickListener() {

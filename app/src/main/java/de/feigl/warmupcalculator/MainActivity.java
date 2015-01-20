@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity {
     private EditText startingWeight;
     private EditText endingWeight;
     private TextView increment;
+    private TextView tvIncrementNumber;
     private TextView firstSet;
     private TextView secondSet;
     private TextView thirdSet;
@@ -61,6 +62,7 @@ public class MainActivity extends ActionBarActivity {
 
         instantiateWeights();
         increment = (TextView) findViewById(R.id.tv_increment);
+        tvIncrementNumber = (TextView) findViewById(R.id.tv_increment_number);
         instantiateSetStrings();
         instantiatePlatesString();
 
@@ -74,13 +76,7 @@ public class MainActivity extends ActionBarActivity {
                 setIncrementText();
                 calculateFirstTwoSets();
                 if (db.getAllWeights().size() != 0) {
-                    calculateThirdSet();
-                    calculateThirdSet();
-                    calculateForthSet();
-                    calculateFifthSet();
-                    setFifthSetPlates();
-                    setForthSetPlates();
-                    setThirdSetPlates();
+                    calculateLastSetsAndSetText();
                 }
                 changeStartingWeightValue();
             }
@@ -92,12 +88,7 @@ public class MainActivity extends ActionBarActivity {
                 setIncrementText();
                 calculateFirstTwoSets();
                 if (db.getAllWeights().size() != 0) {
-                    calculateThirdSet();
-                    calculateForthSet();
-                    calculateFifthSet();
-                    setFifthSetPlates();
-                    setForthSetPlates();
-                    setThirdSetPlates();
+                    calculateLastSetsAndSetText();
                 }
 
                 if (!hasFocus) {
@@ -118,6 +109,15 @@ public class MainActivity extends ActionBarActivity {
         changeStartingWeightValue();
 
         incrementNumber = calculateIncrement();
+    }
+
+    private void calculateLastSetsAndSetText() {
+        calculateThirdSet();
+        calculateForthSet();
+        calculateFifthSet();
+        setFifthSetPlates();
+        setForthSetPlates();
+        setThirdSetPlates();
     }
 
     private void hideKeyboard() {
@@ -146,7 +146,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setIncrementText() {
-        increment.setText("Increment: " + incrementNumber);
+        increment.setText(R.string.increment_string);
+        tvIncrementNumber.setText(incrementNumber + "kg");
     }
 
     //calculating the set weights/////////////////////////////////////////////////////////////////////////
@@ -325,6 +326,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         checkForEmptyPlates();
+        calculateLastSetsAndSetText();
     }
 
     //    /**

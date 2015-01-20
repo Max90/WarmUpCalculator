@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/starting_weight_hint"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/et_end_weight"
@@ -40,7 +40,7 @@
             android:layout_below="@+id/et_starting_weight"
             android:hint="@string/end_weight_hint"
             android:imeOptions="actionDone"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
 
 
         <TextView
@@ -49,6 +49,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/et_end_weight"
             android:text="@string/increment_string" />
+
+        <TextView
+            android:id="@+id/tv_increment_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tv_increment"
+            android:layout_toRightOf="@+id/tv_increment"
+            android:layout_marginLeft="5dp" />
 
         <TableLayout
             android:layout_width="fill_parent"
