@@ -2,4 +2,5 @@
 <resources>
     <item name="color_primary" type="color">#EB612F</item>
     <item name="color_primary_dark" type="color">#D43520</item>
+    <item name="dialogBackground" type="color">#fff</item>
 </resources>

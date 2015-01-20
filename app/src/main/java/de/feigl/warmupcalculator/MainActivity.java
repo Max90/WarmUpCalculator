@@ -1,24 +1,33 @@
 package de.feigl.warmupcalculator;
 
-import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alertdialogpro.AlertDialogPro;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+
+import de.feigl.warmupcalculator.Database.WeightsDatabase;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -40,13 +49,16 @@ public class MainActivity extends ActionBarActivity {
     private float starting;
     ArrayList<Double> plates;
 
+    WeightsDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+
+        db = new WeightsDatabase(this);
+
         instantiateWeights();
         increment = (TextView) findViewById(R.id.tv_increment);
         instantiateSetStrings();
@@ -61,28 +73,36 @@ public class MainActivity extends ActionBarActivity {
             public void onFocusChange(View view, boolean b) {
                 setIncrementText();
                 calculateFirstTwoSets();
-                calculateThirdSet();
-                calculateThirdSet();
-                calculateForthSet();
-                calculateFifthSet();
-                setFifthSetPlates();
-                setForthSetPlates();
-                setThirdSetPlates();
+                if (db.getAllWeights().size() != 0) {
+                    calculateThirdSet();
+                    calculateThirdSet();
+                    calculateForthSet();
+                    calculateFifthSet();
+                    setFifthSetPlates();
+                    setForthSetPlates();
+                    setThirdSetPlates();
+                }
                 changeStartingWeightValue();
             }
         });
 
         endingWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
+            public void onFocusChange(View view, boolean hasFocus) {
                 setIncrementText();
                 calculateFirstTwoSets();
-                calculateThirdSet();
-                calculateForthSet();
-                calculateFifthSet();
-                setFifthSetPlates();
-                setForthSetPlates();
-                setThirdSetPlates();
+                if (db.getAllWeights().size() != 0) {
+                    calculateThirdSet();
+                    calculateForthSet();
+                    calculateFifthSet();
+                    setFifthSetPlates();
+                    setForthSetPlates();
+                    setThirdSetPlates();
+                }
+
+                if (!hasFocus) {
+                    hideKeyboard();
+                }
             }
         });
 
@@ -100,6 +120,19 @@ public class MainActivity extends ActionBarActivity {
         incrementNumber = calculateIncrement();
     }
 
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    private void checkForEmptyPlates() {
+        if (db.getAllWeights().size() == 0) {
+            setDialogNoWeights();
+        }
+
+        plates = db.getAllWeights();
+    }
+
     private void changeStartingWeightValue() {
         if (startingWeight.getText().toString().equals("")) {
             starting = 0;
@@ -109,13 +142,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setPlates() {
-        plates.add(1.25);
-        plates.add(2.5);
-        plates.add(5.0);
-        plates.add(10.0);
-        plates.add(15.0);
-        plates.add(20.0);
-        plates.add(25.0);
+        db.getAllWeights();
     }
 
     private void setIncrementText() {
@@ -126,20 +153,20 @@ public class MainActivity extends ActionBarActivity {
     private void calculateFifthSet() {
         incrementNumber = calculateIncrement();
         float step = incrementNumber;
-        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
         fifthSet.setText("2 x " + weight);
     }
 
     private void calculateForthSet() {
         float step = calculateIncrement();
-        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
         forthSet.setText("3 x " + weight);
 
     }
 
     private void calculateThirdSet() {
         float step = incrementNumber;
-        double weight = starting + step - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
+        double weight = starting + step - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
         thirdSet.setText("5 x " + weight);
     }
 
@@ -184,18 +211,14 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<Double> getPlates(double trainingWeight, ArrayList<Double> plates) {
 
         double oneSide = (trainingWeight - 20) / 2;
-        double lightest_plate = plates.get(6);
-
-        Collections.sort(plates, new Comparator<Double>() {
-            @Override
-            public int compare(Double c1, Double c2) {
-                return Double.compare(c2, c1);
-            }
-        });
+        double lightestPlate = 0;
+        if (plates.size() != 0) {
+            lightestPlate = plates.get(plates.size() - 1);
+        }
 
         ArrayList<Double> result = new ArrayList<Double>();
 
-        while (oneSide >= lightest_plate) {
+        while (oneSide >= lightestPlate) {
             Boolean found = false;
             for (int i = 0; i < plates.size(); i++) {
                 double plate = plates.get(i);
@@ -218,8 +241,8 @@ public class MainActivity extends ActionBarActivity {
 
     private void setFifthSetPlates() {
         float step = calculateIncrement();
-        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
-        ArrayList<Double> platesList = getPlates(weight, plates);
+        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
@@ -231,8 +254,8 @@ public class MainActivity extends ActionBarActivity {
 
     private void setForthSetPlates() {
         float step = calculateIncrement();
-        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
-        ArrayList<Double> platesList = getPlates(weight, plates);
+        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
@@ -244,8 +267,8 @@ public class MainActivity extends ActionBarActivity {
 
     private void setThirdSetPlates() {
         float step = calculateIncrement();
-        double weight = starting + (step) - ((starting + (step * 3)) % new Double(plates.get(6).toString()));
-        ArrayList<Double> platesList = getPlates(weight, plates);
+        double weight = starting + (step) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
             platesString = platesString.concat(platesList.get(i).toString() + ", ");
@@ -269,13 +292,124 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == R.id.action_weights) {
             Intent i = new Intent(MainActivity.this, WeightsActivity.class);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setDialogNoWeights() {
+        AlertDialogPro.Builder alertDialogBuilder = new AlertDialogPro.Builder(MainActivity.this);
+        // set dialog message
+        alertDialogBuilder
+                .setTitle(R.string.no_weights_string)
+                .setMessage(R.string.no_weights_dialog_string)
+                .setCancelable(false)
+                .setPositiveButton(R.string.add_weight_string, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i = new Intent(MainActivity.this, WeightsActivity.class);
+                        dialog.dismiss();
+                        startActivity(i);
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkForEmptyPlates();
+    }
+
+    //    /**
+//     * A placeholder fragment containing a simple view.
+//     */
+//    public static class PlaceholderFragment extends Fragment {
+//
+//        public PlaceholderFragment() {
+//        }
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                                 Bundle savedInstanceState) {
+//            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+//            return rootView;
+//        }
+//    }
+
+    /**
+     * This class makes the ad request and loads the ad.
+     */
+    public static class AdFragment extends Fragment {
+
+        private AdView mAdView;
+
+        public AdFragment() {
+        }
+
+        @Override
+        public void onActivityCreated(Bundle bundle) {
+            super.onActivityCreated(bundle);
+
+            // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
+            // values/strings.xml.
+            mAdView = (AdView) getView().findViewById(R.id.adView);
+
+            // Create an ad request. Check logcat output for the hashed device ID to
+            // get test ads on a physical device. e.g.
+            // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+
+            // Start loading the ad in the background.
+            mAdView.loadAd(adRequest);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_ad, container, false);
+        }
+
+        /**
+         * Called when leaving the activity
+         */
+        @Override
+        public void onPause() {
+            if (mAdView != null) {
+                mAdView.pause();
+            }
+            super.onPause();
+        }
+
+        /**
+         * Called when returning to the activity
+         */
+        @Override
+        public void onResume() {
+            super.onResume();
+            if (mAdView != null) {
+                mAdView.resume();
+            }
+        }
+
+        /**
+         * Called before the activity is destroyed
+         */
+        @Override
+        public void onDestroy() {
+            if (mAdView != null) {
+                mAdView.destroy();
+            }
+            super.onDestroy();
+        }
+
     }
 }

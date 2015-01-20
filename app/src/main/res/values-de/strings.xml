@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Warmup Rechner</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="increment_string">Erhöhung: </string>
+    <string name="plates_on_side_string">Scheiben auf jeder Seite</string>
+    <string name="set_string">Satz</string>
+    <string name="starting_weight_hint">Anfangsgewicht eingeben</string>
+    <string name="end_weight_hint">Arbeitssatzgewicht eingeben</string>
+    <string name="chnage_plates_menu_string">Scheiben ändern</string>
+    <string name="title_activity_weights">Verfügbare Scheiben ändern</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+</resources>
