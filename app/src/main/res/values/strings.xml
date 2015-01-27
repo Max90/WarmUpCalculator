@@ -28,5 +28,6 @@
     <string name="bar_too_heavy_message_string">The bar is too heavy for your starting weight. Either change the weight of the bar or enter a higher starting weight.</string>
     <string name="ok_string">OK</string>
     <string name="list_of_weights_string">List of weights</string>
+    <string name="no_weight_added_string">You entered no weight</string>
 
 </resources>

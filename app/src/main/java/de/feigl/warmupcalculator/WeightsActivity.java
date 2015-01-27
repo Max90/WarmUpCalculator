@@ -2,6 +2,7 @@ package de.feigl.warmupcalculator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alertdialogpro.AlertDialogPro;
 
@@ -98,18 +100,35 @@ public class WeightsActivity extends ActionBarActivity {
         alertDialogBuilder.setPositiveButton(R.string.done_string, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                db.addWeight(Double.parseDouble(input.getText().toString()));
-                mAdapter.swapWeights(db.getAllWeights());
+                if (input.getText().toString().equals("")) {
+                    Toast.makeText(WeightsActivity.this, R.string.no_weight_added_string, Toast.LENGTH_SHORT).show();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                } else {
+                    db.addWeight(Double.parseDouble(input.getText().toString()));
+                    mAdapter.swapWeights(db.getAllWeights());
+
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                    dialog.dismiss();
+                }
             }
         });
 
         alertDialogBuilder.setNegativeButton(R.string.cancel_string, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+
+                dialog.dismiss();
             }
         });
 
         alertDialogBuilder.show();
+        input.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
