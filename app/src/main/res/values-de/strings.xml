@@ -15,11 +15,16 @@
     <string name="add_weight_title_string">Scheibe hinzufügen</string>
     <string name="cancel_string">Abbrechen</string>
     <string name="delete_string">Löschen</string>
-    <string name="delete_weight_dialog_string">Sind Sie sicher, dass Sie diese Scheibe löschen wollen</string>
+    <string name="delete_weight_dialog_string">Bist du sicher, dass du diese Scheibe löschen willst?</string>
     <string name="delete_weight_title_string">Scheibe löschen</string>
     <string name="done_string">Fertig</string>
-    <string name="hello_blank_fragment"></string>
     <string name="no_string">Nein</string>
-    <string name="no_weights_dialog_string">Es sind keine Scheiben erstellt</string>
+    <string name="no_weights_dialog_string">Es sind noch keine Scheiben erstellt</string>
     <string name="no_weights_string">Keine Scheiben</string>
+    <string name="bar_weight_string">Gewicht der Stange</string>
+    <string name="bar_too_heavy_message_string">Die Stange ist zu schwer für das Startgewicht. Ändere entweder das Startgewicht oder das Gewicht der Stange</string>
+    <string name="bar_too_heavy_title_string">Stange zu schwer</string>
+    <string name="list_of_weights_string">Liste der Gewichte</string>
+    <string name="ok_string">OK</string>
+    <string name="save_string">Speichern</string>
 </resources>

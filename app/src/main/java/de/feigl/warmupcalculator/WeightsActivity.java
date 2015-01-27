@@ -1,5 +1,6 @@
 package de.feigl.warmupcalculator;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -12,7 +13,9 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,14 +31,28 @@ public class WeightsActivity extends ActionBarActivity {
     RecyclerView mRecyclerView;
     WeightsAdapter mAdapter;
     WeightsDatabase db;
-    ArrayList<Double> weightsList;
+    EditText barWeightInput;
+    Button saveBarWeightButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weights);
+        db = new WeightsDatabase(WeightsActivity.this);
 
-        db = new WeightsDatabase(this);
+        barWeightInput = (EditText) findViewById(R.id.et_bar_weight);
+
+        //muss noch in string umgewandelt werden
+        barWeightInput.setHint(String.valueOf(db.getBarWeight()) + "kg");
+        saveBarWeightButton = (Button) findViewById(R.id.b_save_bar_weight);
+        saveBarWeightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!barWeightInput.getText().toString().equals("")) {
+                    db.updateBarWeight(Double.parseDouble(barWeightInput.getText().toString()));
+                }
+            }
+        });
 
         mRecyclerView = (RecyclerView) findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -44,7 +61,6 @@ public class WeightsActivity extends ActionBarActivity {
         mAdapter = new WeightsAdapter(db.getAllWeights(), R.layout.row_weights, this);
         mRecyclerView.setAdapter(mAdapter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

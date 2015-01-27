@@ -1,6 +1,5 @@
 package de.feigl.warmupcalculator;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,8 +23,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import de.feigl.warmupcalculator.Database.WeightsDatabase;
 
@@ -48,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
     private TextView fifthSetPlates;
     private float incrementNumber;
     private float starting;
+    private double barWeight;
     ArrayList<Double> plates;
 
     WeightsDatabase db;
@@ -60,6 +58,7 @@ public class MainActivity extends ActionBarActivity {
 
         db = new WeightsDatabase(this);
 
+        barWeight = db.getBarWeight();
         instantiateWeights();
         increment = (TextView) findViewById(R.id.tv_increment);
         tvIncrementNumber = (TextView) findViewById(R.id.tv_increment_number);
@@ -67,18 +66,21 @@ public class MainActivity extends ActionBarActivity {
         instantiatePlatesString();
 
         plates = new ArrayList<Double>();
-        setPlates();
         setIncrementText();
         calculateFirstTwoSets();
         startingWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 setIncrementText();
-                calculateFirstTwoSets();
                 if (db.getAllWeights().size() != 0) {
-                    calculateLastSetsAndSetText();
+                    setPlates();
+                    calculateSetsAndSetText();
                 }
-                changeStartingWeightValue();
+                if (!startingWeight.getText().toString().equals("") && Double.parseDouble(startingWeight.getText().toString()) < db.getBarWeight()) {
+                    setDialogBarToHeavy();
+                } else {
+                    changeStartingWeightValue();
+                }
             }
         });
 
@@ -86,9 +88,9 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 setIncrementText();
-                calculateFirstTwoSets();
                 if (db.getAllWeights().size() != 0) {
-                    calculateLastSetsAndSetText();
+                    setPlates();
+                    calculateSetsAndSetText();
                 }
 
                 if (!hasFocus) {
@@ -111,25 +113,27 @@ public class MainActivity extends ActionBarActivity {
         incrementNumber = calculateIncrement();
     }
 
-    private void calculateLastSetsAndSetText() {
+    private void calculateSetsAndSetText() {
+        calculateFirstTwoSets();
         calculateThirdSet();
         calculateForthSet();
         calculateFifthSet();
         setFifthSetPlates();
         setForthSetPlates();
         setThirdSetPlates();
+        setFirstTwoSetsPlates();
     }
 
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(endingWeight.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
     }
 
     private void checkForEmptyPlates() {
         if (db.getAllWeights().size() == 0) {
             setDialogNoWeights();
         }
-
         plates = db.getAllWeights();
     }
 
@@ -142,7 +146,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setPlates() {
-        db.getAllWeights();
+        plates = db.getAllWeights();
     }
 
     private void setIncrementText() {
@@ -154,20 +158,20 @@ public class MainActivity extends ActionBarActivity {
     private void calculateFifthSet() {
         incrementNumber = calculateIncrement();
         float step = incrementNumber;
-        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        double weight = starting + (step * 3) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         fifthSet.setText("2 x " + weight);
     }
 
     private void calculateForthSet() {
         float step = calculateIncrement();
-        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        double weight = starting + (step * 2) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         forthSet.setText("3 x " + weight);
 
     }
 
     private void calculateThirdSet() {
         float step = incrementNumber;
-        double weight = starting + step - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        double weight = starting + step - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         thirdSet.setText("5 x " + weight);
     }
 
@@ -211,7 +215,7 @@ public class MainActivity extends ActionBarActivity {
 
     private ArrayList<Double> getPlates(double trainingWeight, ArrayList<Double> plates) {
 
-        double oneSide = (trainingWeight - 20) / 2;
+        double oneSide = (trainingWeight - barWeight) / 2;
         double lightestPlate = 0;
         if (plates.size() != 0) {
             lightestPlate = plates.get(plates.size() - 1);
@@ -231,7 +235,7 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
             if (!found) {
-                return null;
+                return result;
             }
         }
         if (oneSide > 0) {
@@ -242,7 +246,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void setFifthSetPlates() {
         float step = calculateIncrement();
-        double weight = starting + (step * 3) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        double weight = starting + (step * 3) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
@@ -255,7 +259,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void setForthSetPlates() {
         float step = calculateIncrement();
-        double weight = starting + (step * 2) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        double weight = starting + (step * 2) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
@@ -268,7 +272,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void setThirdSetPlates() {
         float step = calculateIncrement();
-        double weight = starting + (step) - ((starting + (step * 3)) % new Double(plates.get(plates.size() - 1).toString()));
+        double weight = starting + (step) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
@@ -277,6 +281,18 @@ public class MainActivity extends ActionBarActivity {
         if (platesString.length() > 0)
             platesString = platesString.substring(0, platesString.length() - 2);
         thirdSetPlates.setText(platesString);
+    }
+
+    private void setFirstTwoSetsPlates() {
+        ArrayList<Double> platesList = getPlates(starting, db.getAllWeights());
+        String platesString = "";
+        for (int i = 0; i < platesList.size(); i++) {
+            platesString = platesString.concat(platesList.get(i).toString() + ", ");
+        }
+        if (platesString.length() > 0)
+            platesString = platesString.substring(0, platesString.length() - 2);
+        firstSetPlates.setText(platesString);
+        secondSetPlates.setText(platesString);
     }
 
 
@@ -322,28 +338,36 @@ public class MainActivity extends ActionBarActivity {
         alertDialog.show();
     }
 
+    private void setDialogBarToHeavy() {
+        AlertDialogPro.Builder alertDialogBuilder = new AlertDialogPro.Builder(MainActivity.this);
+        // set dialog message
+        alertDialogBuilder
+                .setTitle(R.string.bar_too_heavy_title_string)
+                .setMessage(R.string.bar_too_heavy_message_string)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok_string, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startingWeight.setText("");
+                        startingWeight.requestFocus();
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         checkForEmptyPlates();
-        calculateLastSetsAndSetText();
+        if (db.getAllWeights().size() != 0) {
+            calculateSetsAndSetText();
+        }
     }
-
-    //    /**
-//     * A placeholder fragment containing a simple view.
-//     */
-//    public static class PlaceholderFragment extends Fragment {
-//
-//        public PlaceholderFragment() {
-//        }
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                                 Bundle savedInstanceState) {
-//            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-//            return rootView;
-//        }
-//    }
 
     /**
      * This class makes the ad request and loads the ad.
