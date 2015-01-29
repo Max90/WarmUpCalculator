@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
     private TextView thirdSetPlates;
     private TextView forthSetPlates;
     private TextView fifthSetPlates;
-    private float incrementNumber;
+    private double incrementNumber;
     private float starting;
     private double barWeight;
     ArrayList<Double> plates;
@@ -157,20 +157,20 @@ public class MainActivity extends ActionBarActivity {
     //calculating the set weights/////////////////////////////////////////////////////////////////////////
     private void calculateFifthSet() {
         incrementNumber = calculateIncrement();
-        float step = incrementNumber;
+        double step = incrementNumber;
         double weight = starting + (step * 3) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         fifthSet.setText("2 x " + weight);
     }
 
     private void calculateForthSet() {
-        float step = calculateIncrement();
+        double step = calculateIncrement();
         double weight = starting + (step * 2) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         forthSet.setText("3 x " + weight);
 
     }
 
     private void calculateThirdSet() {
-        float step = incrementNumber;
+        double step = incrementNumber;
         double weight = starting + step - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         thirdSet.setText("5 x " + weight);
     }
@@ -182,12 +182,25 @@ public class MainActivity extends ActionBarActivity {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //calculates the increment of the single sets an sets it in the textView
-    private float calculateIncrement() {
-        float incrementValue = 0;
+    private double calculateIncrement() {
+        double incrementValue = 0;
         if (!startingWeight.getText().toString().equals("") && !endingWeight.getText().toString().equals("")) {
             float startWeight = Float.parseFloat(startingWeight.getText().toString());
             float endWeight = Float.parseFloat(endingWeight.getText().toString());
             incrementValue = (endWeight - startWeight) / 4;
+            incrementValue = roundIncrementToLowestPlate(incrementValue);
+        }
+        return incrementValue;
+    }
+
+    private double roundIncrementToLowestPlate(double incrementValue) {
+        double modulo = incrementValue % (plates.get(plates.size() - 1) * 2);
+        if (modulo != 0) {
+            if (modulo < plates.get(plates.size() - 1)) {
+                incrementValue = incrementValue - (modulo);
+            } else {
+                incrementValue = incrementValue + (modulo);
+            }
         }
         return incrementValue;
     }
@@ -239,13 +252,13 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         if (oneSide > 0) {
-            return null;
+            return result;
         }
         return result;
     }
 
     private void setFifthSetPlates() {
-        float step = calculateIncrement();
+        double step = calculateIncrement();
         double weight = starting + (step * 3) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
@@ -258,7 +271,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setForthSetPlates() {
-        float step = calculateIncrement();
+        double step = calculateIncrement();
         double weight = starting + (step * 2) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
@@ -271,7 +284,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setThirdSetPlates() {
-        float step = calculateIncrement();
+        double step = calculateIncrement();
         double weight = starting + (step) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
         ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
