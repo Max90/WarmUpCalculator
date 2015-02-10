@@ -187,7 +187,6 @@ public class MainActivity extends ActionBarActivity {
             float endWeight = Float.parseFloat(etEndingWeight.getText().toString());
             incrementValue = (endWeight - startWeight) / 4;
             incrementValue = new BigDecimal((incrementValue / 4) * 4).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-            ;
         }
         return incrementValue;
     }
@@ -342,7 +341,6 @@ public class MainActivity extends ActionBarActivity {
 
     private void setDialogBarToHeavy() {
         AlertDialogPro.Builder alertDialogBuilder = new AlertDialogPro.Builder(MainActivity.this);
-        // set dialog message
         alertDialogBuilder
                 .setTitle(R.string.bar_too_heavy_title_string)
                 .setMessage(R.string.bar_too_heavy_message_string)
@@ -354,11 +352,7 @@ public class MainActivity extends ActionBarActivity {
                         dialog.dismiss();
                     }
                 });
-
-        // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
         alertDialog.show();
     }
 
@@ -370,6 +364,8 @@ public class MainActivity extends ActionBarActivity {
             calculateSetsAndSetText();
         }
     }
+
+    // Ad Fragment /////////////////////////////////////////////////////////////////////////////////
 
     /**
      * This class makes the ad request and loads the ad.
@@ -406,9 +402,6 @@ public class MainActivity extends ActionBarActivity {
             return inflater.inflate(R.layout.fragment_ad, container, false);
         }
 
-        /**
-         * Called when leaving the activity
-         */
         @Override
         public void onPause() {
             if (mAdView != null) {
@@ -417,9 +410,6 @@ public class MainActivity extends ActionBarActivity {
             super.onPause();
         }
 
-        /**
-         * Called when returning to the activity
-         */
         @Override
         public void onResume() {
             super.onResume();
@@ -428,9 +418,6 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        /**
-         * Called before the activity is destroyed
-         */
         @Override
         public void onDestroy() {
             if (mAdView != null) {
