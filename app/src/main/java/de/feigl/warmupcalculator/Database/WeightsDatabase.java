@@ -98,10 +98,26 @@ public class WeightsDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_WEIGHT, weight);
+        if (!weightExists(weight)) {
+            values.put(COLUMN_WEIGHT, weight);
+            // Inserting Row
+            db.insert(TABLE_WEIGHTS, null, values);
+        }
+    }
 
-        // Inserting Row
-        db.insert(TABLE_WEIGHTS, null, values);
+    public Boolean weightExists(double weight) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_WEIGHTS, new String[]{COLUMN_ID,
+                        COLUMN_WEIGHT}, COLUMN_WEIGHT + "=?",
+                new String[]{String.valueOf(weight)}, null, null, null, null
+        );
+        if (cursor != null)
+            cursor.moveToFirst();
+        if (cursor != null && cursor.getCount() != 0) {
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<Double> getAllWeights() {
