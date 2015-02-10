@@ -55,29 +55,31 @@
             android:layout_below="@+id/tv_increment"
             android:layout_marginTop="33dp">
 
-            <TableRow android:weightSum="2">
+            <TableRow android:layout_width="match_parent">
 
                 <TextView
                     android:id="@+id/tv_set"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:text="@string/set_string" />
 
                 <TextView
                     android:id="@+id/tv_plates"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="50dp"
                     android:text="@string/plates_on_side_string" />
             </TableRow>
 
-            <TableRow android:weightSum="2">
+            <TableRow>
 
                 <TextView
                     android:id="@+id/tv_first_set"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_first_set_plates"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="50dp"
                     android:textSize="18sp" />
             </TableRow>
 
@@ -85,12 +87,13 @@
 
                 <TextView
                     android:id="@+id/tv_second_set"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_second_set_plates"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="50dp"
                     android:textSize="18sp" />
             </TableRow>
 
@@ -98,12 +101,13 @@
 
                 <TextView
                     android:id="@+id/tv_third_set"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_third_set_plates"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="50dp"
                     android:textSize="18sp" />
             </TableRow>
 
@@ -111,12 +115,13 @@
 
                 <TextView
                     android:id="@+id/tv_forth_set"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_forth_set_plates"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="50dp"
                     android:textSize="18sp" />
             </TableRow>
 
@@ -124,12 +129,13 @@
 
                 <TextView
                     android:id="@+id/tv_fifth_set"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_fifth_set_plates"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="50dp"
                     android:textSize="18sp" />
             </TableRow>
         </TableLayout>

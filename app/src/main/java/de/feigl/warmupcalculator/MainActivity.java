@@ -22,14 +22,15 @@ import com.alertdialogpro.AlertDialogPro;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import de.feigl.warmupcalculator.Database.WeightsDatabase;
 
 
 public class MainActivity extends ActionBarActivity {
-    private EditText startingWeight;
-    private EditText endingWeight;
+    private EditText etStartingWeight;
+    private EditText etEndingWeight;
     private TextView increment;
     private TextView tvIncrementNumber;
     private TextView firstSet;
@@ -44,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
     private TextView forthSetPlates;
     private TextView fifthSetPlates;
     private double incrementNumber;
-    private float starting;
+    private float startingWeight;
     private double barWeight;
     ArrayList<Double> plates;
 
@@ -68,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
         plates = new ArrayList<Double>();
         setIncrementText();
         calculateFirstTwoSets();
-        startingWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        etStartingWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 setIncrementText();
@@ -76,7 +77,7 @@ public class MainActivity extends ActionBarActivity {
                     setPlates();
                     calculateSetsAndSetText();
                 }
-                if (!startingWeight.getText().toString().equals("") && Double.parseDouble(startingWeight.getText().toString()) < db.getBarWeight()) {
+                if (!etStartingWeight.getText().toString().equals("") && Double.parseDouble(etStartingWeight.getText().toString()) < db.getBarWeight()) {
                     setDialogBarToHeavy();
                 } else {
                     changeStartingWeightValue();
@@ -84,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        endingWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        etEndingWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 incrementNumber = calculateIncrement();
@@ -100,11 +101,11 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        endingWeight.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        etEndingWeight.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE)
-                    endingWeight.clearFocus();
+                    etEndingWeight.clearFocus();
                 return false;
             }
         });
@@ -126,7 +127,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(endingWeight.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        imm.hideSoftInputFromWindow(etEndingWeight.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
     }
 
@@ -138,10 +139,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void changeStartingWeightValue() {
-        if (startingWeight.getText().toString().equals("")) {
-            starting = 0;
+        if (etStartingWeight.getText().toString().equals("")) {
+            startingWeight = 0;
         } else {
-            starting = Float.parseFloat(startingWeight.getText().toString());
+            startingWeight = Float.parseFloat(etStartingWeight.getText().toString());
         }
     }
 
@@ -156,37 +157,37 @@ public class MainActivity extends ActionBarActivity {
 
     //calculating the set weights/////////////////////////////////////////////////////////////////////////
     private double calculateFifthSet() {
-        double weight = roundIncrementToLowestPlate(starting + (incrementNumber * 3));
+        double weight = roundIncrementToLowestPlate(startingWeight + (incrementNumber * 3));
         fifthSet.setText("2 x " + removeFloatDigitIfPossible(weight));
         return weight;
     }
 
     private double calculateForthSet() {
-        double weight = roundIncrementToLowestPlate(starting + (incrementNumber * 2));
+        double weight = roundIncrementToLowestPlate(startingWeight + (incrementNumber * 2));
         forthSet.setText("3 x " + removeFloatDigitIfPossible(weight));
         return weight;
     }
 
     private double calculateThirdSet() {
-        double weight = roundIncrementToLowestPlate(starting + (incrementNumber * 1));
+        double weight = roundIncrementToLowestPlate(startingWeight + (incrementNumber * 1));
         thirdSet.setText("5 x " + removeFloatDigitIfPossible(weight));
         return weight;
     }
 
     private void calculateFirstTwoSets() {
-        firstSet.setText("5 x " + startingWeight.getText().toString());
-        secondSet.setText("5 x " + startingWeight.getText().toString());
+        firstSet.setText("5 x " + etStartingWeight.getText().toString());
+        secondSet.setText("5 x " + etStartingWeight.getText().toString());
     }
-//////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //calculates the increment of the single sets an sets it in the textView
     private double calculateIncrement() {
         double incrementValue = 0;
-        if (!startingWeight.getText().toString().equals("") && !endingWeight.getText().toString().equals("")) {
-            float startWeight = Float.parseFloat(startingWeight.getText().toString());
-            float endWeight = Float.parseFloat(endingWeight.getText().toString());
+        if (!etStartingWeight.getText().toString().equals("") && !etEndingWeight.getText().toString().equals("")) {
+            float startWeight = Float.parseFloat(etStartingWeight.getText().toString());
+            float endWeight = Float.parseFloat(etEndingWeight.getText().toString());
             incrementValue = (endWeight - startWeight) / 4;
-            incrementValue = Math.round(incrementValue / 4) * 4;
+            incrementValue = new BigDecimal((incrementValue / 4) * 4).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+            ;
         }
         return incrementValue;
     }
@@ -197,8 +198,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void instantiateWeights() {
-        startingWeight = (EditText) findViewById(R.id.et_starting_weight);
-        endingWeight = (EditText) findViewById(R.id.et_end_weight);
+        etStartingWeight = (EditText) findViewById(R.id.et_starting_weight);
+        etEndingWeight = (EditText) findViewById(R.id.et_end_weight);
     }
 
     private void instantiateSetStrings() {
@@ -290,7 +291,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setFirstTwoSetsPlates() {
-        ArrayList<String> platesList = getPlates(starting, db.getAllWeights());
+        ArrayList<String> platesList = getPlates(startingWeight, db.getAllWeights());
         String platesString = setPlatesStringText(platesList);
         firstSetPlates.setText(platesString);
         secondSetPlates.setText(platesString);
@@ -348,8 +349,8 @@ public class MainActivity extends ActionBarActivity {
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok_string, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startingWeight.setText("");
-                        startingWeight.requestFocus();
+                        etStartingWeight.setText("");
+                        etStartingWeight.requestFocus();
                         dialog.dismiss();
                     }
                 });
