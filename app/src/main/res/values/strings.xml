@@ -29,5 +29,7 @@
     <string name="ok_string">OK</string>
     <string name="list_of_weights_string">List of weights</string>
     <string name="no_weight_added_string">You entered no weight</string>
+    <string name="save_back_string">Save / Back</string>
+    <string name="no_weight_hint_string">To enter a weight click on the plus above</string>
 
 </resources>

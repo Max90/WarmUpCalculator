@@ -87,6 +87,7 @@ public class MainActivity extends ActionBarActivity {
         endingWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                incrementNumber = calculateIncrement();
                 setIncrementText();
                 if (db.getAllWeights().size() != 0) {
                     setPlates();
@@ -110,7 +111,6 @@ public class MainActivity extends ActionBarActivity {
 
         changeStartingWeightValue();
 
-        incrementNumber = calculateIncrement();
     }
 
     private void calculateSetsAndSetText() {
@@ -156,22 +156,18 @@ public class MainActivity extends ActionBarActivity {
 
     //calculating the set weights/////////////////////////////////////////////////////////////////////////
     private void calculateFifthSet() {
-        incrementNumber = calculateIncrement();
-        double step = incrementNumber;
-        double weight = starting + (step * 3) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
+        double weight = starting + (incrementNumber * 3) - ((starting + (incrementNumber * 3)) % plates.get(plates.size() - 1));
         fifthSet.setText("2 x " + weight);
     }
 
     private void calculateForthSet() {
-        double step = calculateIncrement();
-        double weight = starting + (step * 2) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
+        double weight = starting + (incrementNumber * 2) - ((starting + (incrementNumber * 2)) % plates.get(plates.size() - 1));
         forthSet.setText("3 x " + weight);
 
     }
 
     private void calculateThirdSet() {
-        double step = incrementNumber;
-        double weight = starting + step - ((starting + (step * 3)) % plates.get(plates.size() - 1));
+        double weight = starting + incrementNumber - ((starting + incrementNumber) % plates.get(plates.size() - 1));
         thirdSet.setText("5 x " + weight);
     }
 
@@ -196,11 +192,7 @@ public class MainActivity extends ActionBarActivity {
     private double roundIncrementToLowestPlate(double incrementValue) {
         double modulo = incrementValue % (plates.get(plates.size() - 1) * 2);
         if (modulo != 0) {
-            if (modulo < plates.get(plates.size() - 1)) {
                 incrementValue = incrementValue - (modulo);
-            } else {
-                incrementValue = incrementValue + (modulo);
-            }
         }
         return incrementValue;
     }
@@ -226,7 +218,7 @@ public class MainActivity extends ActionBarActivity {
         fifthSetPlates = (TextView) findViewById(R.id.tv_fifth_set_plates);
     }
 
-    private ArrayList<Double> getPlates(double trainingWeight, ArrayList<Double> plates) {
+    private ArrayList<String> getPlates(double trainingWeight, ArrayList<Double> plates) {
 
         double oneSide = (trainingWeight - barWeight) / 2;
         double lightestPlate = 0;
@@ -234,14 +226,14 @@ public class MainActivity extends ActionBarActivity {
             lightestPlate = plates.get(plates.size() - 1);
         }
 
-        ArrayList<Double> result = new ArrayList<Double>();
+        ArrayList<String> result = new ArrayList<>();
 
         while (oneSide >= lightestPlate) {
             Boolean found = false;
             for (int i = 0; i < plates.size(); i++) {
                 double plate = plates.get(i);
                 if (oneSide - plate >= 0) {
-                    result.add(plate);
+                    result.add(removeFloatDigitIfPossible(plate));
                     oneSide = oneSide - plate;
                     found = true;
                     break;
@@ -257,13 +249,23 @@ public class MainActivity extends ActionBarActivity {
         return result;
     }
 
+    private String removeFloatDigitIfPossible(double weight) {
+        String result;
+        if (weight % 1 == 0) {
+            result = String.valueOf((int) weight);
+        } else {
+            result = String.valueOf(weight);
+        }
+        return result;
+    }
+
     private void setFifthSetPlates() {
         double step = calculateIncrement();
         double weight = starting + (step * 3) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
-        ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
+        ArrayList<String> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
-            platesString = platesString.concat(platesList.get(i).toString() + ", ");
+            platesString = platesString.concat(platesList.get(i) + ", ");
         }
         if (platesString.length() > 0)
             platesString = platesString.substring(0, platesString.length() - 2);
@@ -273,10 +275,10 @@ public class MainActivity extends ActionBarActivity {
     private void setForthSetPlates() {
         double step = calculateIncrement();
         double weight = starting + (step * 2) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
-        ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
+        ArrayList<String> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
-            platesString = platesString.concat(platesList.get(i).toString() + ", ");
+            platesString = platesString.concat(platesList.get(i) + ", ");
         }
         if (platesString.length() > 0)
             platesString = platesString.substring(0, platesString.length() - 2);
@@ -286,10 +288,10 @@ public class MainActivity extends ActionBarActivity {
     private void setThirdSetPlates() {
         double step = calculateIncrement();
         double weight = starting + (step) - ((starting + (step * 3)) % plates.get(plates.size() - 1));
-        ArrayList<Double> platesList = getPlates(weight, db.getAllWeights());
+        ArrayList<String> platesList = getPlates(weight, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
-            platesString = platesString.concat(platesList.get(i).toString() + ", ");
+            platesString = platesString.concat(platesList.get(i) + ", ");
         }
         if (platesString.length() > 0)
             platesString = platesString.substring(0, platesString.length() - 2);
@@ -297,10 +299,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setFirstTwoSetsPlates() {
-        ArrayList<Double> platesList = getPlates(starting, db.getAllWeights());
+        ArrayList<String> platesList = getPlates(starting, db.getAllWeights());
         String platesString = "";
         for (int i = 0; i < platesList.size(); i++) {
-            platesString = platesString.concat(platesList.get(i).toString() + ", ");
+            platesString = platesString.concat(platesList.get(i) + ", ");
         }
         if (platesString.length() > 0)
             platesString = platesString.substring(0, platesString.length() - 2);

@@ -27,4 +27,7 @@
     <string name="list_of_weights_string">Liste der Gewichte</string>
     <string name="ok_string">OK</string>
     <string name="save_string">Speichern</string>
+    <string name="save_back_string">Speichern / Zurück</string>
+    <string name="no_weight_added_string">Es wurde kein Gewicht eingegeben</string>
+    <string name="no_weight_hint_string">Um eine Scheibe hinzuzufügen bitte auf das Plus oben klicken</string>
 </resources>

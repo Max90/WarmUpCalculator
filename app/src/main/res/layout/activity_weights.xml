@@ -35,7 +35,8 @@
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:text="@string/save_string"
-            android:layout_weight=".50" />
+            android:layout_weight=".50"
+            android:background="@color/color_primary_dark" />
 
     </LinearLayout>
 
@@ -60,6 +61,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".WeightsActivitz"
-        android:layout_below="@+id/tv_list_of_weights" />
+        android:layout_below="@+id/tv_list_of_weights"
+        android:layout_above="@+id/b_save_back" />
+
+    <TextView
+        android:id="@+id/tv_no_weights_hint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/no_weight_hint_string"
+        android:layout_below="@+id/tv_list_of_weights"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_centerVertical="true" />
+
+    <Button
+        android:id="@+id/b_save_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_back_string"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_primary_dark"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" />
 
 </RelativeLayout>

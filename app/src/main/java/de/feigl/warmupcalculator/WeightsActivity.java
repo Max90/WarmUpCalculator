@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -35,6 +36,8 @@ public class WeightsActivity extends ActionBarActivity {
     WeightsDatabase db;
     EditText barWeightInput;
     Button saveBarWeightButton;
+    Button saveAndBackButton;
+    TextView noWeightsHint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,17 @@ public class WeightsActivity extends ActionBarActivity {
         db = new WeightsDatabase(WeightsActivity.this);
 
         barWeightInput = (EditText) findViewById(R.id.et_bar_weight);
+        noWeightsHint = (TextView) findViewById(R.id.tv_no_weights_hint);
 
-        //muss noch in string umgewandelt werden
+        saveAndBackButton = (Button) findViewById(R.id.b_save_back);
+        saveAndBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(WeightsActivity.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
+
         barWeightInput.setHint(String.valueOf(db.getBarWeight()) + "kg");
         saveBarWeightButton = (Button) findViewById(R.id.b_save_bar_weight);
         saveBarWeightButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +98,23 @@ public class WeightsActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        changeVisbilityOfHint();
+    }
+
+    public void changeVisbilityOfHint() {
+        if (db.getAllWeights().size() == 0) {
+            mRecyclerView.setVisibility(View.GONE);
+            noWeightsHint.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            noWeightsHint.setVisibility(View.GONE);
+        }
+    }
+
     private void setDialogAddWeight() {
         AlertDialogPro.Builder alertDialogBuilder = new AlertDialogPro.Builder(WeightsActivity.this)
                 .setTitle(R.string.add_weight_title_string)
@@ -104,12 +133,14 @@ public class WeightsActivity extends ActionBarActivity {
                     Toast.makeText(WeightsActivity.this, R.string.no_weight_added_string, Toast.LENGTH_SHORT).show();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                    changeVisbilityOfHint();
                 } else {
                     db.addWeight(Double.parseDouble(input.getText().toString()));
                     mAdapter.swapWeights(db.getAllWeights());
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                    changeVisbilityOfHint();
                     dialog.dismiss();
                 }
             }
@@ -120,7 +151,7 @@ public class WeightsActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int which) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-
+                changeVisbilityOfHint();
                 dialog.dismiss();
             }
         });

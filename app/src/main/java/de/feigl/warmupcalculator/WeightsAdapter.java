@@ -1,5 +1,6 @@
 package de.feigl.warmupcalculator;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,7 +45,7 @@ public class WeightsAdapter extends RecyclerView.Adapter<WeightsAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         final Double weight = weights.get(i);
-        viewHolder.tvWeight.setText(weight.toString() + " kg");
+        viewHolder.tvWeight.setText(removeFloatDigitIfPossible(weight) + " kg");
         viewHolder.ivDumbbell.setImageResource(R.drawable.dumbbell);
         viewHolder.ivDelete.setImageResource((R.drawable.delete));
 
@@ -54,6 +55,16 @@ public class WeightsAdapter extends RecyclerView.Adapter<WeightsAdapter.ViewHold
                 setDialogDeleteWeight(weight);
             }
         });
+    }
+
+    private String removeFloatDigitIfPossible(double weight) {
+        String result;
+        if (weight % 1 == 0) {
+            result = String.valueOf((int) weight);
+        } else {
+            result = String.valueOf(weight);
+        }
+        return result;
     }
 
     @Override
@@ -72,6 +83,7 @@ public class WeightsAdapter extends RecyclerView.Adapter<WeightsAdapter.ViewHold
                     public void onClick(DialogInterface dialog, int id) {
                         WeightsDatabase db = new WeightsDatabase(mContext);
                         db.deleteWeight(weight);
+                        ((WeightsActivity) mContext).changeVisbilityOfHint();
                         swapWeights(db.getAllWeights());
                     }
                 })
