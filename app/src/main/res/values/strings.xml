@@ -22,7 +22,7 @@
     <string name="cancel_string">Cancel</string>
     <string name="no_weights_string">No plates</string>
     <string name="no_weights_dialog_string">There are no plates specified</string>
-    <string name="bar_weight_string">Bar weight</string>
+    <string name="bar_weight_string">Current bar weight</string>
     <string name="save_string">Save</string>
     <string name="bar_too_heavy_title_string">Bar too heavy</string>
     <string name="bar_too_heavy_message_string">The bar is too heavy for your starting weight. Either change the weight of the bar or enter a higher starting weight.</string>
@@ -30,6 +30,6 @@
     <string name="list_of_weights_string">List of weights</string>
     <string name="no_weight_added_string">You entered no weight</string>
     <string name="save_back_string">Save / Back</string>
-    <string name="no_weight_hint_string">To enter a weight click on the plus above</string>
+    <string name="no_weight_hint_string">Please enter the weight of the plates you have in your gym. To do so click on the plus button above.</string>
 
 </resources>

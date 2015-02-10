@@ -57,7 +57,7 @@ public class WeightsActivity extends ActionBarActivity {
             }
         });
 
-        barWeightInput.setHint(String.valueOf(db.getBarWeight()) + "kg");
+        barWeightInput.setHint(removeFloatDigitIfPossible(db.getBarWeight()) + " kg");
         saveBarWeightButton = (Button) findViewById(R.id.b_save_bar_weight);
         saveBarWeightButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +74,16 @@ public class WeightsActivity extends ActionBarActivity {
 
         mAdapter = new WeightsAdapter(db.getAllWeights(), R.layout.row_weights, this);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private String removeFloatDigitIfPossible(double weight) {
+        String result;
+        if (weight % 1 == 0) {
+            result = String.valueOf((int) weight);
+        } else {
+            result = String.valueOf(weight);
+        }
+        return result;
     }
 
     @Override

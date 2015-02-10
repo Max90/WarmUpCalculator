@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/tv_bar_weight">
+        android:layout_below="@+id/tv_bar_weight"
+        android:layout_marginTop="5dp">
 
         <EditText
             android:id="@+id/et_bar_weight"
@@ -62,17 +63,18 @@
         android:layout_height="match_parent"
         tools:context=".WeightsActivitz"
         android:layout_below="@+id/tv_list_of_weights"
-        android:layout_above="@+id/b_save_back" />
+        android:layout_above="@+id/b_save_back"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:id="@+id/tv_no_weights_hint"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/no_weight_hint_string"
         android:layout_below="@+id/tv_list_of_weights"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_centerVertical="true" />
+        android:layout_marginTop="10dp" />
 
     <Button
         android:id="@+id/b_save_back"
